@@ -1,7 +1,6 @@
 package com.krishagni.xml;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class XmlToXlsConverter {
 	private static HSSFWorkbook workbook;
 
 	public static void main(String [] args){
-		//String [] args = {"C:\\Users\\krishagni\\Downloads\\Xml to Excel App\\Xml to CSV Auto\\Sample Xml Files","C:\\Users\\krishagni\\Downloads\\Xml to Excel App\\Xml to CSV Auto\\output"};
+		//String [] args = {"C:\\Users\\krishagni\\git\\xmlToXls\\XmlToXls\\inputDocs","C:\\Users\\krishagni\\git\\xmlToXls\\XmlToXls\\output"};
 
 		
 		XmlToXlsConverter converter = new XmlToXlsConverter();
@@ -172,7 +171,7 @@ public class XmlToXlsConverter {
 		//imaging details
 		writeCellValue(5, rowNumberOther, 0, xd.getFileName());
 		writeCellValue(5, rowNumberOther, 3, xd.getModality());
-		writeCellValue(5, rowNumberOther, 8, xd.getFindings());
+		writeCellValue(5, rowNumberOther, 9, xd.getFindings());
 		writeCellValue(5, rowNumberOther, 10, xd.getDifferentialDiagnosis());
 		writeCellValue(5, rowNumberOther, 11, xd.getDiscussion());
 		writeCellValue(5, rowNumberOther, 12, xd.getComments());
@@ -202,7 +201,9 @@ public class XmlToXlsConverter {
 
 
 	private XMLdata printNote(NodeList nodeList,XMLdata xd) {
-		
+		String findingFinalText = "";
+		String diagnosisFinalText = "";
+		String discussionFinalText = "";
 		for (int count = 0; count < nodeList.getLength(); count++) {
 
 			Node tempNode = nodeList.item(count);
@@ -248,7 +249,11 @@ public class XmlToXlsConverter {
 				}
 				//Diagnosis
 				if(tempNode.getNodeName().equals("p")&& tempNode.getParentNode().getAttributes().getNamedItem("heading").getNodeValue().equals("Diagnosis")){
-					xd.setDiagnosis(tempNode.getTextContent().trim());
+					for (int i = 0; i < tempNode.getChildNodes().getLength(); i++) {
+						String textContent = tempNode.getChildNodes().item(i).getTextContent();
+						diagnosisFinalText = diagnosisFinalText+(textContent);
+					} 
+					xd.setDiagnosis(diagnosisFinalText);
 
 				}
 				//modality
@@ -257,7 +262,14 @@ public class XmlToXlsConverter {
 				}
 				//finding
 				if(tempNode.getNodeName().equals("p")&& tempNode.getParentNode().getAttributes().getNamedItem("heading").getNodeValue().equals("Findings")){
-					xd.setFindings(tempNode.getTextContent().trim());
+					
+					for (int i = 0; i < tempNode.getChildNodes().getLength(); i++) {
+						String textContent = tempNode.getChildNodes().item(i).getTextContent();
+						findingFinalText = findingFinalText+(textContent);
+					} 
+					
+					xd.setFindings(findingFinalText);
+					
 				}
 				//level
 				if(tempNode.getNodeName().equals("level")){
@@ -274,7 +286,11 @@ public class XmlToXlsConverter {
 				}
 				//Discussion
 				if(tempNode.getNodeName().equals("p")&& tempNode.getParentNode().getAttributes().getNamedItem("heading").getNodeValue().equals("Discussion")){
-					xd.setDiscussion((tempNode.getTextContent().trim()));
+					for (int i = 0; i < tempNode.getChildNodes().getLength(); i++) {
+						String textContent = tempNode.getChildNodes().item(i).getTextContent();
+						discussionFinalText = discussionFinalText+(textContent);
+					} 
+					xd.setDiscussion((discussionFinalText));
 
 				}
 				//Comments
